@@ -1,0 +1,11 @@
+client/
+ethos/
+linux/
+*.goo.*
+expenseReportClient
+expenseReportServer
+typeDefs.go
+typeDefs/
+typeDefsIndex/
+
+
