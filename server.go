@@ -26,12 +26,32 @@ func init(){
 
 	// Setup RPC
 	typeDefs.SetupAuthRegisterPusher(doRegisterPusher);
+	typeDefs.SetupAuthRegisterPuller(doRegisterPuller);
 
 }
 
 func doRegisterPusher(username string)(typeDefs.AuthProcedure){
 	user := typeDefs.Pusher{};
+	user.Username = username;
+	user.Key = "123" //generateKey(40);
+	filePath := "/etc/braidsPushers/" + username;
+	status := altEthos.Write(filePath, &user);
+	if status != syscall.StatusOk {
+		log.Fatalf("Error writing auth for %v | status: %v", username, status);
+	}
 	return &typeDefs.AuthRegisterPusherReply{user};
+}
+
+func doRegisterPuller(username string)(typeDefs.AuthProcedure){
+	user := typeDefs.Puller{};
+	user.Username = username;
+	user.Key = generateKey(40);
+	filePath := "/etc/braidsPullers/" + username;
+	status := altEthos.Write(filePath, &user);
+	if status != syscall.StatusOk {
+		log.Fatalf("Error writing auth for %v | status: %v", username, status);
+	}
+	return &typeDefs.AuthRegisterPullerReply{user};
 }
 
 func generateKey(length int) string{
@@ -48,7 +68,37 @@ func generateKey(length int) string{
 	return string(randomString)
 }
 
+func verifyPusher(user typeDefs.Pusher) bool{
+	storedUser := typeDefs.Pusher{};
+	filePath := "/etc/braidsPushers/"+user.Username;
+	status := altEthos.Read(filePath, &storedUser);
+	log.Printf("status %v storeduser %v", status, storedUser);
+	if status != syscall.StatusOk {
+		return false;
+	}
+	if(storedUser.Key != user.Key){
+		return false;
+	}
+	return true;
+}
+
+func verifyPuller(user typeDefs.Puller) bool{
+	storedUser := typeDefs.Puller{};
+	filePath := "/etc/braidsPullers/"+user.Username;
+	status := altEthos.Read(filePath, &storedUser);
+	log.Printf("status %v storeduser %v", status, storedUser);
+	if status != syscall.StatusOk {
+		return false;
+	}
+	if(storedUser.Key != user.Key){
+		return false;
+	}
+	return true;
+}
 
 func main(){
-	log.Println("Key: %v", generateKey(10));
+	user := typeDefs.Puller{Username: "karthik", Key: "123"}
+	log.Printf("pusher reg: ", doRegisterPuller("karthik"));
+	log.Printf("pusher verify: ", verifyPuller(user));
+	// doRegisterPuller("karthik");
 }
