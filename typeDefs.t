@@ -4,8 +4,8 @@ Auth interface{
 }
 
 Broker interface{
-	Push(username string, key string, data string) (status Status)
-	Pull(username string, key string) (data string, status Status)
+	Push(user Pusher, data string) (status Status)
+	Pull(user Puller) (msg Message, status Status)
 }
 
 Pusher struct{
@@ -21,5 +21,5 @@ Puller struct{
 Message struct{
 	Id string
 	Data string
-	CreatedAt string
+	CreatedAt int64
 }
