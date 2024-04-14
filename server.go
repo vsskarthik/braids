@@ -38,10 +38,10 @@ func generateKey(length int) string{
 	log.Print("Generating Key.....")
 	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	randomString := make([]byte, length)
-	seed := int64(syscall.GetTime());
+	seed := syscall.GetTime();
 	for i:=0; i<length; i++{
-		seed = (seed*1103515245 + 12345) % (1 << 31)
-		index := int(seed % int64(len(charset)));
+		seed += (seed * 1103515245 + 12345) % (1 << 31) 
+		index := int(int64(seed) % int64(len(charset)));
 		randomString[i] = charset[index]
 	}
 	log.Println("Done")
