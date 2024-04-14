@@ -24,7 +24,31 @@ func init(){
 		log.Fatalf("Error could not create %v %v\n", pullerPath, status);
 	}
 
+	// Setup RPC
+	typeDefs.SetupAuthRegisterPusher(doRegisterPusher);
+
+}
+
+func doRegisterPusher(username string)(typeDefs.AuthProcedure){
+	user := typeDefs.Pusher{};
+	return &typeDefs.AuthRegisterPusherReply{user};
+}
+
+func generateKey(length int) string{
+	log.Print("Generating Key.....")
+	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	randomString := make([]byte, length)
+	seed := int64(syscall.GetTime());
+	for i:=0; i<length; i++{
+		seed = (seed*1103515245 + 12345) % (1 << 31)
+		index := int(seed % int64(len(charset)));
+		randomString[i] = charset[index]
+	}
+	log.Println("Done")
+	return string(randomString)
 }
 
 
-func main(){}
+func main(){
+	log.Println("Key: %v", generateKey(10));
+}

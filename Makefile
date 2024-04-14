@@ -35,12 +35,12 @@ server: server.go typeDefs.goo.ethos
 install: all
 	sudo rm -rf client
 	(ethosParams client && cd client && ethosMinimaltdBuilder)
-	(cd client/rootfs && ethosUserRecord user1 "User 1" "user1@example.com" "" && ethosUserRecord user2 "User 2" "user2@example.com" "")
+	#(cd client/rootfs && ethosUserRecord user1 "User 1" "user1@example.com" "" && ethosUserRecord user2 "User 2" "user2@example.com" "")
 	echo 60 > client/param/sleepTime 
 	ethosTypeInstall typeDefs
 	ethosDirCreate $(ETHOSROOT)/services/typeDefs   $(ETHOSROOT)/types/spec/typeDefs/ExpenseReport all
 	install -D server                   $(ETHOSROOT)/programs
-	#ethosStringEncode /programs/server    > $(ETHOSROOT)/etc/init/services/server
+	ethosStringEncode /programs/server    > $(ETHOSROOT)/etc/init/services/server
 	#ethosStringEncode /programs/expenseReportClient       > $(ETHOSROOT)/etc/init/services/expenseReportClient
 
 # remove build artifacts
@@ -50,3 +50,7 @@ clean:
 	rm -f server
 	rm -f typeDefs.goo.ethos
 	rm -f server.goo.ethos
+
+run: clean install
+	(cd client && sudo -E ethosRun -t)
+	ethosLog client > log
