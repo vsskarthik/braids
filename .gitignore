@@ -2,10 +2,7 @@ client/
 ethos/
 linux/
 *.goo.*
-expenseReportClient
-expenseReportServer
+server
 typeDefs.go
 typeDefs/
 typeDefsIndex/
-
-

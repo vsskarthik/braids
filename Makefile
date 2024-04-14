@@ -16,7 +16,7 @@ export MINIMALTDROOT=client/minimaltdfs
 
 
 .PHONY: all install clean
-all: expenseReportClient expenseReportServer
+all:  server
 
 ethos:
 	mkdir ethos
@@ -28,11 +28,8 @@ typeDefs.go: typeDefs.t
 typeDefs.goo.ethos : typeDefs.go ethos
 	ethosGoPackage  typeDefs ethos typeDefs.go
 
-expenseReportServer: expenseReportServer.go typeDefs.goo.ethos
-	ethosGo expenseReportServer.go
-
-expenseReportClient: expenseReportClient.go typeDefs.goo.ethos
-	ethosGo expenseReportClient.go
+server: server.go typeDefs.goo.ethos
+	ethosGo server.go
 
 # install typeDefs, service,
 install: all
@@ -42,16 +39,14 @@ install: all
 	echo 60 > client/param/sleepTime 
 	ethosTypeInstall typeDefs
 	ethosDirCreate $(ETHOSROOT)/services/typeDefs   $(ETHOSROOT)/types/spec/typeDefs/ExpenseReport all
-	install -D  expenseReportClient expenseReportServer                   $(ETHOSROOT)/programs
-	#ethosStringEncode /programs/expenseReportServer    > $(ETHOSROOT)/etc/init/services/expenseReportServer
+	install -D server                   $(ETHOSROOT)/programs
+	#ethosStringEncode /programs/server    > $(ETHOSROOT)/etc/init/services/server
 	#ethosStringEncode /programs/expenseReportClient       > $(ETHOSROOT)/etc/init/services/expenseReportClient
 
 # remove build artifacts
 clean:
 	rm -rf typeDefs/ typeDefsIndex/ ethos clent
 	rm -f typeDefs.go
-	rm -f expenseReportClient
-	rm -f expenseReportServer
+	rm -f server
 	rm -f typeDefs.goo.ethos
-	rm -f expenseReportServer.goo.ethos
-	rm -f expenseReportClient.goo.ethos
+	rm -f server.goo.ethos

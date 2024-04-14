@@ -9,11 +9,17 @@ Broker interface{
 }
 
 Pusher struct{
-	username string
-	key string
+	Username string
+	Key string
 }
 
 Puller struct{
-	username string
-	key string
+	Username string
+	Key string
+}
+
+Message struct{
+	Id string
+	Data string
+	CreatedAt string
 }
