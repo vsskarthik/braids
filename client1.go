@@ -3,18 +3,22 @@ package main
 import (
 	"ethos/altEthos"
 	"ethos/syscall"
-	"ethos/typeDefs"
+	"ethos/braidsAuthTypes"
 	"ethos/defined"
 	"log"
 )
 
 func init() {
-
+	braidsAuthTypes.SetupAuthRegisterPusherReply(doRegisterPusherReply);
 }
 
+func doRegisterPusherReply(user braidsAuthTypes.Pusher) (braidsAuthTypes.AuthProcedure){
+	log.Println("Registered Pusher: ", user);
+	return nil;
+}
 
 func callRpc(rpc defined.Rpc){
-	fd, status := altEthos.IpcRepeat("typeDefs", "", nil)
+	fd, status := altEthos.IpcRepeat("braidsAuthTypes", "", nil)
 	if status != syscall.StatusOk {
 		log.Printf("Ipc failed: %v\n", status)
 		altEthos.Exit(status)
@@ -29,7 +33,11 @@ func callRpc(rpc defined.Rpc){
 
 
 func main(){
-	altEthos.LogToDirectory
+	altEthos.LogToDirectory("test/braidsClient");
+	log.Println("INIT CLIENT")
+
+	log.Println("CALLING REG PUSHER")
+	callRpc(&braidsAuthTypes.AuthRegisterPusher{"karthik"});
 
 
 

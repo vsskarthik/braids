@@ -16,39 +16,46 @@ export MINIMALTDROOT=client/minimaltdfs
 
 
 .PHONY: all install clean
-all:  server
+all:  braidsAuth client1
 
 ethos:
 	mkdir ethos
 	cp -pr /usr/lib64/go/pkg/ethos_$(GOARCH)/* ethos
 
-typeDefs.go: typeDefs.t
-	$(ETN2GO) . typeDefs $^
+braidsAuthTypes.go: braidsAuthTypes.t
+	$(ETN2GO) . braidsAuthTypes $^
 
-typeDefs.goo.ethos : typeDefs.go ethos
-	ethosGoPackage  typeDefs ethos typeDefs.go
+braidsAuthTypes.goo.ethos : braidsAuthTypes.go ethos
+	ethosGoPackage  braidsAuthTypes ethos braidsAuthTypes.go
 
-server: server.go typeDefs.goo.ethos
-	ethosGo server.go
+braidsAuth: braidsAuth.go braidsAuthTypes.goo.ethos
+	ethosGo braidsAuth.go
 
-# install typeDefs, service,
+client1: client1.go braidsAuthTypes.goo.ethos
+	ethosGo client1.go
+
+# install braidsAuthTypes, service,
 install: all
 	sudo rm -rf client
 	(ethosParams client && cd client && ethosMinimaltdBuilder)
 	echo 80 > client/param/sleepTime 
-	ethosTypeInstall typeDefs
-	ethosDirCreate $(ETHOSROOT)/services/typeDefs   $(ETHOSROOT)/types/spec/typeDefs/Auth all
-	install -D server                   $(ETHOSROOT)/programs
-	ethosStringEncode /programs/server    > $(ETHOSROOT)/etc/init/services/server
+	ethosTypeInstall braidsAuthTypes
+	ethosDirCreate $(ETHOSROOT)/services/braidsAuthTypes   $(ETHOSROOT)/types/spec/braidsAuthTypes/Auth all
+	install -D braidsAuth                   $(ETHOSROOT)/programs
+	install -D client1                   $(ETHOSROOT)/programs
+	ethosStringEncode /programs/braidsAuth    > $(ETHOSROOT)/etc/init/services/braidsAuth
+	ethosStringEncode /programs/client1    > $(ETHOSROOT)/etc/init/services/client1
 
 # remove build artifacts
 clean:
-	rm -rf typeDefs/ typeDefsIndex/ ethos clent
-	rm -f typeDefs.go
-	rm -f server
-	rm -f typeDefs.goo.ethos
-	rm -f server.goo.ethos
+	rm -rf braidsAuthTypes/ braidsAuthTypesIndex/ ethos clent
+	rm -f braidsAuthTypes.go
+	rm -f braidsAuth
+	rm -f braidsAuthTypes.goo.ethos
+	rm -f braidsAuth.goo.ethos
 
 run: clean install
 	(cd client && sudo -E ethosRun -t)
-	ethosLog client > log
+	cat client/rootfs/log/application/braidsAuth/* > serverLog
+	cat client/rootfs/log/test/braidsClient/* > clientLog
+

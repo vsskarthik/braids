@@ -6,4 +6,11 @@ server
 typeDefs.go
 typeDefs/
 typeDefsIndex/
+braidsAuthTypes.go
+braidsAuthTypes/
+braidsAuthTypesIndex/
+client1
+braidsAuth
 log
+serverLog
+clientLog
