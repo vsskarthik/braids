@@ -87,7 +87,7 @@ func generateKey(length int) string{
 	randomString := make([]byte, length)
 	seed := syscall.GetTime();
 	for i:=0; i<length; i++{
-		seed += (seed * 1103515245 + 12345) % (1 << 31) 
+		seed += (seed * 1103515245 + 12345) % (1 << 31)
 		index := int(int64(seed) % int64(len(charset)));
 		randomString[i] = charset[index]
 	}
@@ -122,12 +122,24 @@ func verifyPuller(user typeDefs.Puller) bool{
 }
 
 func main(){
-	testPusher := typeDefs.Pusher{Username: "pusher", Key: "123"}
-	doRegisterPusher("pusher")
-	testPuller := typeDefs.Puller{Username: "puller", Key: "123"}
-	doRegisterPuller("puller")
-	doPush(testPusher, "TEST_MSG");
-	log.Printf("Queue State %v", masterQueue);
-	log.Println("Pulled Message: ", doPull(testPuller));
-	log.Printf("Queue State %v", masterQueue);
+	altEthos.LogToDirectory("application/braids")
+
+	listeningFd, status := altEthos.Advertise("typeDefs")
+	if status != syscall.StatusOk {
+		log.Println("Advertising service failed: ", status)
+		altEthos.Exit(status)
+	}
+
+	for {
+		_, fd, status := altEthos.Import(listeningFd)
+		if status != syscall.StatusOk {
+			log.Printf("Error calling Import: %v\n", status)
+			altEthos.Exit(status)
+		}
+
+		log.Println("new connection accepted")
+
+		authHandler := typeDefs.Auth{}
+		altEthos.Handle(fd, &authHandler)
+	}
 }

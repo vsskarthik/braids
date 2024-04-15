@@ -35,13 +35,11 @@ server: server.go typeDefs.goo.ethos
 install: all
 	sudo rm -rf client
 	(ethosParams client && cd client && ethosMinimaltdBuilder)
-	#(cd client/rootfs && ethosUserRecord user1 "User 1" "user1@example.com" "" && ethosUserRecord user2 "User 2" "user2@example.com" "")
 	echo 80 > client/param/sleepTime 
 	ethosTypeInstall typeDefs
-	ethosDirCreate $(ETHOSROOT)/services/typeDefs   $(ETHOSROOT)/types/spec/typeDefs/ExpenseReport all
+	ethosDirCreate $(ETHOSROOT)/services/typeDefs   $(ETHOSROOT)/types/spec/typeDefs/Auth all
 	install -D server                   $(ETHOSROOT)/programs
 	ethosStringEncode /programs/server    > $(ETHOSROOT)/etc/init/services/server
-	#ethosStringEncode /programs/expenseReportClient       > $(ETHOSROOT)/etc/init/services/expenseReportClient
 
 # remove build artifacts
 clean:
