@@ -48,14 +48,15 @@ install: all
 
 # remove build artifacts
 clean:
-	rm -rf braidsAuthTypes/ braidsAuthTypesIndex/ ethos clent
+	rm -rf braidsAuthTypes/ braidsAuthTypesIndex/ ethos client
 	rm -f braidsAuthTypes.go
 	rm -f braidsAuth
+	rm -f client1
 	rm -f braidsAuthTypes.goo.ethos
 	rm -f braidsAuth.goo.ethos
+	rm -f client1.goo.ethos
 
 run: clean install
 	(cd client && sudo -E ethosRun -t)
 	cat client/rootfs/log/application/braidsAuth/* > serverLog
 	cat client/rootfs/log/test/braidsClient/* > clientLog
-

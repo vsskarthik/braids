@@ -31,6 +31,8 @@ func init(){
 	// Setup RPC
 	braidsAuthTypes.SetupAuthRegisterPusher(doRegisterPusher);
 	braidsAuthTypes.SetupAuthRegisterPuller(doRegisterPuller);
+	braidsAuthTypes.SetupAuthVerifyPusher(doVerifyPusher);
+	braidsAuthTypes.SetupAuthVerifyPuller(doVerifyPuller);
 
 	log.Println("SETUP")
 }
@@ -96,30 +98,30 @@ func generateKey(length int) string{
 	return string(randomString)
 }
 
-func verifyPusher(user braidsAuthTypes.Pusher) bool{
+func doVerifyPusher(user braidsAuthTypes.Pusher) (braidsAuthTypes.AuthProcedure){
 	storedUser := braidsAuthTypes.Pusher{};
 	filePath := "/etc/braidsPushers/"+user.Username;
 	status := altEthos.Read(filePath, &storedUser);
 	if status != syscall.StatusOk {
-		return false;
+		return &braidsAuthTypes.AuthVerifyPusherReply{syscall.StatusInvalidAuthentication};
 	}
 	if(storedUser.Key != user.Key){
-		return false;
+		return &braidsAuthTypes.AuthVerifyPusherReply{syscall.StatusInvalidAuthentication};
 	}
-	return true;
+	return &braidsAuthTypes.AuthVerifyPusherReply{syscall.StatusOk};
 }
 
-func verifyPuller(user braidsAuthTypes.Puller) bool{
+func doVerifyPuller(user braidsAuthTypes.Puller) (braidsAuthTypes.AuthProcedure){
 	storedUser := braidsAuthTypes.Puller{};
 	filePath := "/etc/braidsPullers/"+user.Username;
 	status := altEthos.Read(filePath, &storedUser);
 	if status != syscall.StatusOk {
-		return false;
+		return &braidsAuthTypes.AuthVerifyPullerReply{syscall.StatusInvalidAuthentication};
 	}
 	if(storedUser.Key != user.Key){
-		return false;
+		return &braidsAuthTypes.AuthVerifyPullerReply{syscall.StatusInvalidAuthentication};
 	}
-	return true;
+	return &braidsAuthTypes.AuthVerifyPullerReply{syscall.StatusOk};
 }
 
 func main(){

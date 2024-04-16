@@ -1,13 +1,3 @@
-Auth interface{
-	RegisterPusher(username string) (user Pusher)
-	RegisterPuller(username string) (user Puller)
-}
-
-Broker interface{
-	Push(user Pusher, data string) (status Status)
-	Pull(user Puller) (msg Message, status Status)
-}
-
 Pusher struct{
 	Username string
 	Key string
