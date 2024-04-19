@@ -16,7 +16,7 @@ export MINIMALTDROOT=client/minimaltdfs
 
 
 .PHONY: all install clean
-all:  braidsAuth client1
+all:  braidsAuth braidsBroker client1
 
 ethos:
 	mkdir ethos
@@ -28,8 +28,17 @@ braidsAuthTypes.go: braidsAuthTypes.t
 braidsAuthTypes.goo.ethos : braidsAuthTypes.go ethos
 	ethosGoPackage  braidsAuthTypes ethos braidsAuthTypes.go
 
+braidsBrokerTypes.go: braidsBrokerTypes.t
+	$(ETN2GO) . braidsBrokerTypes $^
+
+braidsBrokerTypes.goo.ethos : braidsBrokerTypes.go ethos
+	ethosGoPackage  braidsBrokerTypes ethos braidsBrokerTypes.go
+
 braidsAuth: braidsAuth.go braidsAuthTypes.goo.ethos
 	ethosGo braidsAuth.go
+
+braidsBroker: braidsBroker.go braidsBrokerTypes.goo.ethos
+	ethosGo braidsBroker.go
 
 client1: client1.go braidsAuthTypes.goo.ethos
 	ethosGo client1.go
@@ -40,10 +49,14 @@ install: all
 	(ethosParams client && cd client && ethosMinimaltdBuilder)
 	echo 80 > client/param/sleepTime 
 	ethosTypeInstall braidsAuthTypes
+	ethosTypeInstall braidsBrokerTypes
 	ethosDirCreate $(ETHOSROOT)/services/braidsAuthTypes   $(ETHOSROOT)/types/spec/braidsAuthTypes/Auth all
+	ethosDirCreate $(ETHOSROOT)/services/braidsBrokerTypes   $(ETHOSROOT)/types/spec/braidsBrokerTypes/Auth all
 	install -D braidsAuth                   $(ETHOSROOT)/programs
+	install -D braidsBroker                   $(ETHOSROOT)/programs
 	install -D client1                   $(ETHOSROOT)/programs
 	ethosStringEncode /programs/braidsAuth    > $(ETHOSROOT)/etc/init/services/braidsAuth
+	ethosStringEncode /programs/braidsBroker    > $(ETHOSROOT)/etc/init/services/braidsBroker
 	ethosStringEncode /programs/client1    > $(ETHOSROOT)/etc/init/services/client1
 
 # remove build artifacts

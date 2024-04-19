@@ -10,7 +10,6 @@ import (
 var masterQueue []braidsAuthTypes.Message;
 
 func init(){
-	log.Println("SERVER INIT")
 	pusherPath := "/etc/braidsPushers"
 	pullerPath := "/etc/braidsPullers"
 
@@ -21,20 +20,16 @@ func init(){
 	if status != syscall.StatusOk && status != syscall.StatusExists {
 		log.Fatalf("Error could not create %v %v\n", pusherPath, status);
 	}
-	log.Println("CREATE DIR1")
 	status = altEthos.DirectoryCreate(pullerPath, &puller, "all");
 	if status != syscall.StatusOk && status != syscall.StatusExists {
 		log.Fatalf("Error could not create %v %v\n", pullerPath, status);
 	}
 
-	log.Println("CREATE DIR2")
 	// Setup RPC
 	braidsAuthTypes.SetupAuthRegisterPusher(doRegisterPusher);
 	braidsAuthTypes.SetupAuthRegisterPuller(doRegisterPuller);
 	braidsAuthTypes.SetupAuthVerifyPusher(doVerifyPusher);
 	braidsAuthTypes.SetupAuthVerifyPuller(doVerifyPuller);
-
-	log.Println("SETUP")
 }
 
 func doRegisterPusher(username string)(braidsAuthTypes.AuthProcedure){
@@ -60,30 +55,7 @@ func doRegisterPuller(username string)(braidsAuthTypes.AuthProcedure){
 	}
 	return &braidsAuthTypes.AuthRegisterPullerReply{user};
 }
-/*
-func doPush(user braidsAuthTypes.Pusher, data string)  (braidsAuthTypes.BrokerProcedure) {
-	if(verifyPusher(user)){
-		msg := braidsAuthTypes.Message{Id: generateKey(5), Data: data, CreatedAt: int64(syscall.GetTime())};
-		masterQueue = append(masterQueue, msg);
-		return &braidsAuthTypes.BrokerPushReply{syscall.StatusOk};
-	}
 
-	return &braidsAuthTypes.BrokerPushReply{syscall.StatusInvalidAuthentication};
-}
-
-func doPull(user braidsAuthTypes.Puller) (braidsAuthTypes.BrokerProcedure) {
-	if(verifyPuller(user)){
-		if len(masterQueue) == 0 {
-			return &braidsAuthTypes.BrokerPullReply{braidsAuthTypes.Message{}, syscall.StatusInvalidLength};
-		}
-		msg := masterQueue[0];
-		masterQueue = masterQueue[1:];
-		return &braidsAuthTypes.BrokerPullReply{msg, syscall.StatusOk};
-	}
-
-	return &braidsAuthTypes.BrokerPullReply{braidsAuthTypes.Message{}, syscall.StatusInvalidAuthentication};
-}
-*/
 func generateKey(length int) string{
 	log.Print("Generating Key.....")
 	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
