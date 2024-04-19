@@ -3,12 +3,13 @@ package main
 import (
 	"ethos/syscall"
 	"ethos/altEthos"
-	"ethos/braidsAuthTypes"
-	"ethos/braidsBorkerTypes"
+	// "ethos/braidsAuthTypes"
+	"ethos/braidsBrokerTypes"
+	"ethos/defined"
 	"log"
 )
 
-var masterQueue []braidsAuthTypes.Message;
+var masterQueue []braidsBrokerTypes.Message;
 
 func init(){
 	braidsBrokerTypes.SetupBrokerPush(doPush);
@@ -35,7 +36,7 @@ func doPull(user braidsBrokerTypes.Puller) (braidsBrokerTypes.BrokerProcedure) {
 		return &braidsAuthTypes.BrokerPullReply{msg, syscall.StatusOk};
 	}*/
 
-	return &braidsAuthTypes.BrokerPullReply{braidsAuthTypes.Message{}, syscall.StatusInvalidAuthentication};
+	return &braidsBrokerTypes.BrokerPullReply{braidsBrokerTypes.Message{}, syscall.StatusInvalidAuthentication};
 }
 
 func callRpc(rpc defined.Rpc){
@@ -54,7 +55,7 @@ func callRpc(rpc defined.Rpc){
 
 func main(){
 	altEthos.LogToDirectory("application/braidsBroker")
-	listeningFd, status := altEthos.Advertise("braidsBorkerType")
+	listeningFd, status := altEthos.Advertise("braidsBrokerType")
 	if status != syscall.StatusOk {
 		log.Println("Advertising service failed: ", status)
 		altEthos.Exit(status)
@@ -68,7 +69,7 @@ func main(){
 
 		log.Println("[BROKER] new connection accepted")
 
-		authHandler := braidsAuthTypes.Auth{}
-		altEthos.Handle(fd, &authHandler)
+		brokerHandler := braidsBrokerTypes.Broker{}
+		altEthos.Handle(fd, &brokerHandler)
 	}
 }
