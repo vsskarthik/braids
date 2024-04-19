@@ -51,7 +51,7 @@ install: all
 	ethosTypeInstall braidsAuthTypes
 	ethosTypeInstall braidsBrokerTypes
 	ethosDirCreate $(ETHOSROOT)/services/braidsAuthTypes   $(ETHOSROOT)/types/spec/braidsAuthTypes/Auth all
-	ethosDirCreate $(ETHOSROOT)/services/braidsBrokerTypes   $(ETHOSROOT)/types/spec/braidsBrokerTypes/Auth all
+	ethosDirCreate $(ETHOSROOT)/services/braidsBrokerTypes   $(ETHOSROOT)/types/spec/braidsBrokerTypes/Broker all
 	install -D braidsAuth                   $(ETHOSROOT)/programs
 	install -D braidsBroker                   $(ETHOSROOT)/programs
 	install -D client1                   $(ETHOSROOT)/programs
@@ -62,14 +62,19 @@ install: all
 # remove build artifacts
 clean:
 	rm -rf braidsAuthTypes/ braidsAuthTypesIndex/ ethos client
+	rm -rf braidsBrokerTypes/ braidsBrokerTypesIndex/ ethos client
 	rm -f braidsAuthTypes.go
+	rm -f braidsBrokerTypes.go
 	rm -f braidsAuth
+	rm -f braidsBroker
 	rm -f client1
-	rm -f braidsAuthTypes.goo.ethos
-	rm -f braidsAuth.goo.ethos
-	rm -f client1.goo.ethos
+	rm -f *.goo.*
 
 run: clean install
 	(cd client && sudo -E ethosRun -t)
-	cat client/rootfs/log/application/braidsAuth/* > serverLog
+	cat client/rootfs/log/application/braidsAuth/* > authLog
+	cat client/rootfs/log/application/braidsBroker/* > brokerLog
 	cat client/rootfs/log/test/braidsClient/* > clientLog
+	cat authLog
+	cat brokerLog
+	cat clientLog
