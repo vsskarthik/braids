@@ -9,6 +9,8 @@ typeDefsIndex/
 braidsAuthTypes.go
 braidsAuthTypes/
 braidsAuthTypesIndex/
+braidsBrokerTypes/
+braidsBrokerTypesIndex/
 client1
 braidsAuth
 log

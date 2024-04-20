@@ -11,12 +11,18 @@ import (
 
 func init() {
 	braidsAuthTypes.SetupAuthRegisterPusherReply(doRegisterPusherReply);
+	braidsAuthTypes.SetupAuthRegisterPullerReply(doRegisterPullerReply);
 	braidsBrokerTypes.SetupBrokerPushReply(doPushReply);
 	braidsBrokerTypes.SetupBrokerPullReply(doPullReply);
 }
 
 func doRegisterPusherReply(user braidsAuthTypes.Pusher) (braidsAuthTypes.AuthProcedure){
 	log.Println("Registered Pusher: ", user);
+	return nil;
+}
+
+func doRegisterPullerReply(user braidsAuthTypes.Puller) (braidsAuthTypes.AuthProcedure){
+	log.Println("Registered Puller: ", user);
 	return nil;
 }
 
@@ -51,13 +57,15 @@ func main(){
 
 	log.Println("CALLING REG PUSHER")
 	callRpc("braidsAuthTypes", &braidsAuthTypes.AuthRegisterPusher{"karthik"});
+
 	log.Println("CALLING PUSH")
 	user := braidsBrokerTypes.Pusher{"karthik", "123"};
 	callRpc("braidsBrokerTypes", &braidsBrokerTypes.BrokerPush{user, "TST"});
 
 	log.Println("CALLING REG PULLER")
 	callRpc("braidsAuthTypes", &braidsAuthTypes.AuthRegisterPuller{"karthik"});
-	log.Println("CALLING PUSH")
+
+	log.Println("CALLING PULL")
 	user1 := braidsBrokerTypes.Puller{"karthik", "123"};
 	callRpc("braidsBrokerTypes", &braidsBrokerTypes.BrokerPull{user1});
 
