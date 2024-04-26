@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-var generatedKey string = "";
+var generatedKey string = ""
 
 func init() {
 	braidsAuthTypes.SetupAuthRegisterPusherReply(doRegisterPusherReply);
@@ -19,12 +19,12 @@ func init() {
 }
 
 func doRegisterPusherReply(user braidsAuthTypes.Pusher) (braidsAuthTypes.AuthProcedure){
-	generatedKey = user.Key;
 	log.Println("Registered Pusher: ", user);
 	return nil;
 }
 
 func doRegisterPullerReply(user braidsAuthTypes.Puller) (braidsAuthTypes.AuthProcedure){
+	generatedKey = user.Key
 	log.Println("Registered Puller: ", user);
 	return nil;
 }
@@ -57,20 +57,19 @@ func callRpc(rpcType string, rpc defined.Rpc){
 func main(){
 	altEthos.LogToDirectory("test/braidsClient");
 	log.Println("INIT CLIENT")
-
+	/*
 	log.Println("CALLING REG PUSHER")
 	callRpc("braidsAuthTypes", &braidsAuthTypes.AuthRegisterPusher{"karthik"});
 
 	log.Println("CALLING PUSH")
-	user := braidsBrokerTypes.Pusher{"karthik", generatedKey};
+	user := braidsBrokerTypes.Pusher{"karthik", "123"};
 	callRpc("braidsBrokerTypes", &braidsBrokerTypes.BrokerPush{user, "TST"});
-	/*
+	*/
 	log.Println("CALLING REG PULLER")
 	callRpc("braidsAuthTypes", &braidsAuthTypes.AuthRegisterPuller{"karthik"});
 
 	log.Println("CALLING PULL")
-	user1 := braidsBrokerTypes.Puller{"karthik", "123"};
+	user1 := braidsBrokerTypes.Puller{"karthik", generatedKey};
 	callRpc("braidsBrokerTypes", &braidsBrokerTypes.BrokerPull{user1});
-	*/
 
 }

@@ -7,7 +7,6 @@ import (
 	"log"
 )
 
-var masterQueue []braidsAuthTypes.Message;
 
 func init(){
 	pusherPath := "/etc/braidsPushers"
@@ -35,7 +34,7 @@ func init(){
 func doRegisterPusher(username string)(braidsAuthTypes.AuthProcedure){
 	user := braidsAuthTypes.Pusher{};
 	user.Username = username;
-	user.Key = "123" //generateKey(40);
+	user.Key = generateKey(40);
 	filePath := "/etc/braidsPushers/" + username;
 	status := altEthos.Write(filePath, &user);
 	if status != syscall.StatusOk {
@@ -47,7 +46,7 @@ func doRegisterPusher(username string)(braidsAuthTypes.AuthProcedure){
 func doRegisterPuller(username string)(braidsAuthTypes.AuthProcedure){
 	user := braidsAuthTypes.Puller{};
 	user.Username = username;
-	user.Key = "123" //generateKey(40);
+	user.Key = generateKey(40);
 	filePath := "/etc/braidsPullers/" + username;
 	status := altEthos.Write(filePath, &user);
 	if status != syscall.StatusOk {
