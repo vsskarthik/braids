@@ -14,7 +14,6 @@ export BUILD=ethos
 export ETHOSROOT=client/rootfs
 export MINIMALTDROOT=client/minimaltdfs
 
-
 .PHONY: all install clean
 all:  braidsAuth braidsBroker client1 client2
 
@@ -61,8 +60,8 @@ install: all
 	install -D client2                   $(ETHOSROOT)/programs
 	ethosStringEncode /programs/braidsAuth    > $(ETHOSROOT)/etc/init/services/braidsAuth
 	ethosStringEncode /programs/braidsBroker    > $(ETHOSROOT)/etc/init/services/braidsBroker
-	ethosStringEncode /programs/client1    > $(ETHOSROOT)/etc/init/services/client1
-	ethosStringEncode /programs/client2    > $(ETHOSROOT)/etc/init/services/client2
+	#ethosStringEncode /programs/client1    > $(ETHOSROOT)/etc/init/services/client1
+	#ethosStringEncode /programs/client2    > $(ETHOSROOT)/etc/init/services/client2
 
 # remove build artifacts
 clean:
